@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
-from utils import *
 
-carousel_bp = Blueprint('carousel', __name__)
+
+carousel_bp = Blueprint('carousel', __name__, url_prefix='/api/carousel/')
+
+from .utils import save_carousel, get_carousels
 
 @carousel_bp.route('', methods=["POST"])
 def add_carousels():
@@ -15,4 +17,26 @@ def add_carousels():
     if (not image) or (not description) or (not rank):
         return jsonify(result={'failed_msg': "Unanle to save carousel with missing fields"})
 
+    return jsonify(result=save_carousel(image, description, rank))
+
+
+@carousel_bp.route('', methods=['PUT'])
+def update_carousels():
+    """ This function is used to update any existing carousel """
+    data = request.args
+    description = data.get('description')
+    image = data.get('image')
+    rank = data.get('rank')
+    carousel_id = data.get('id')
+
+    if (not image) or (not description) or (not rank) or (not carousel_id):
+        return jsonify(result={'failed_msg': "Unable to update carousel with missing fields"})
+
+    return jsonify(result=save_carousel(image, description, rank, _id=carousel_id))
+
+
+@carousel_bp.route('', methods=['GET'])
+def get_carousel_data():
+    """ This function is used to get all the carousels from the database """
+    return jsonify(result=get_carousels())
     
