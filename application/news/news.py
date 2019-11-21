@@ -35,8 +35,10 @@ def update_news():
     return jsonify(result=save_news(title, description, rank))
 
 
-@carousel_bp.route('', methods=['GET'])
-def get_carousel_data():
-    """ This function is used to get all the carousels from the database """
-    return jsonify(result=get_carousels())
+@news_bp.route('', methods=['GET'])
+def get_news_data():
+    """ This function is used to gets all number of specified news items from the database """
+    data = request.args
+    maxim = data.get('max')
+    return jsonify(result=get_newses(maximum=maxim))
     
