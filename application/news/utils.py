@@ -18,8 +18,8 @@ def save_news(title, description, rank, _id=None):
 
     return get_news()
 
-def get_news():
-    news = list(db.News.find({}))
+def get_news(maximum=None):
+    news = list(db.News.find({})) if maximum else list(db.News.find({'rank': {'$lte': f'{maximum}'}}))
     for a_news in news:
         a_news['_id'] = str(a_news['_id'])
     return news
