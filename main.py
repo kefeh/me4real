@@ -1,6 +1,9 @@
 from flask import Flask
 from mongokit import Connection
+
+# Blueprint Imports
 from application.carousel.carousel import carousel_bp
+from application.news.news import news_bp
 
 # configuration
 MONGODB_HOST = 'localhost'
@@ -17,7 +20,7 @@ connection = Connection(
 
 
 # Registering my blueprints
-app.register_blueprint(carousel_bp)
+app.register_blueprint(carousel_bp, news_bp)
 
 
 if __name__ == '__main__':
