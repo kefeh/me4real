@@ -20,9 +20,9 @@ def save_carousel(image, description, rank, _id=None):
     return get_carousels()
 
 
-def get_carousels():
+def get_carousels(maximum=None):
     from models import db
-    carousels = list(db.Carousel.find({}))
+    carousels = list(db.Carousel.find({})) if not maximum else list(db.Carousel.find({'rank': {'$lte': int(maximum)}}))
     for carousel in carousels:
         carousel['_id'] = str(carousel['_id'])
     return carousels

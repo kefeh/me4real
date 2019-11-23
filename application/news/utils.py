@@ -22,7 +22,7 @@ def save_news(title, description, rank, _id=None):
 
 def get_news(maximum=None):
     from models import db
-    news = list(db.News.find({})) if maximum else list(db.News.find({'rank': {'$lte': f'{maximum}'}}))
+    news = list(db.News.find({})) if not maximum else list(db.News.find({'rank': {'$lte': maximum}}))
     for a_news in news:
         a_news['_id'] = str(a_news['_id'])
     return news

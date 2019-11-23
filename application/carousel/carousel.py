@@ -38,5 +38,7 @@ def update_carousels():
 @carousel_bp.route('', methods=['GET'])
 def get_carousel_data():
     """ This function is used to get all the carousels from the database """
-    return jsonify(result=get_carousels())
+    data = request.args
+    maxim = data.get('max')
+    return jsonify(result=get_carousels(maximum=maxim))
     

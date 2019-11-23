@@ -28,11 +28,12 @@ def update_news():
     description = data.get('description')
     image = data.get('title')
     rank = data.get('rank')
+    news_id = data.get('id')
 
-    if (not title) or (not description) or (not rank):
+    if (not title) or (not description) or (not rank) or (not id):
         return jsonify(result={'failed_msg': "Unanle to save news with missing fields"})
 
-    return jsonify(result=save_news(title, description, rank))
+    return jsonify(result=save_news(title, description, rank, _id=id))
 
 
 @news_bp.route('', methods=['GET'])
