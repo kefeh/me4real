@@ -1,7 +1,8 @@
-from models import db
 from bson import ObjectId
 
+
 def save_carousel(image, description, rank, _id=None):
+    from models import db
     rank = int(rank)
     a_carousel = db.Carousel() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
     some_carousel = db.Carousel.find_one({'rank': rank})
@@ -18,7 +19,9 @@ def save_carousel(image, description, rank, _id=None):
 
     return get_carousels()
 
+
 def get_carousels():
+    from models import db
     carousels = list(db.Carousel.find({}))
     for carousel in carousels:
         carousel['_id'] = str(carousel['_id'])

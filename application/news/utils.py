@@ -1,7 +1,8 @@
-from models import db
 from bson import ObjectId
 
+
 def save_news(title, description, rank, _id=None):
+    from models import db
     rank = int(rank)
     news_item = db.News() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
     some_news = db.News.find_one({'rank': rank})
@@ -18,7 +19,9 @@ def save_news(title, description, rank, _id=None):
 
     return get_news()
 
+
 def get_news(maximum=None):
+    from models import db
     news = list(db.News.find({})) if maximum else list(db.News.find({'rank': {'$lte': f'{maximum}'}}))
     for a_news in news:
         a_news['_id'] = str(a_news['_id'])

@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 
 news_bp = Blueprint('news', __name__, url_prefix='/api/news/')
 
-from .utils import save_news, get_newses
+from .utils import save_news, get_news
 
 @news_bp.route('', methods=["POST"])
 def add_news():
@@ -40,5 +40,5 @@ def get_news_data():
     """ This function is used to gets all number of specified news items from the database """
     data = request.args
     maxim = data.get('max')
-    return jsonify(result=get_newses(maximum=maxim))
+    return jsonify(result=get_news(maximum=maxim))
     
