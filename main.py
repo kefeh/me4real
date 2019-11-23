@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from mongokit import Connection
 
 
@@ -8,6 +9,7 @@ MONGODB_PORT = 27017
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+CORS(app, origins='*')
 
 # connect to  the database
 connection = Connection(
