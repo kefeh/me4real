@@ -9,7 +9,7 @@ from .utils import save_carousel, get_carousels
 def add_carousels():
     """ This function is used to get the request for adding Carousels to the database
     """
-    data = request.args
+    data = request.get_json()
     description = data.get('description')
     image = data.get('image')
     rank = data.get('rank')
@@ -23,7 +23,7 @@ def add_carousels():
 @carousel_bp.route('', methods=['PUT'])
 def update_carousels():
     """ This function is used to update any existing carousel """
-    data = request.args
+    data = request.get_json()
     description = data.get('description')
     image = data.get('image')
     rank = data.get('rank')
