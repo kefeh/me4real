@@ -5,6 +5,7 @@ carousel_bp = Blueprint('carousel', __name__, url_prefix='/api/carousel/')
 
 from .utils import save_carousel, get_carousels
 
+
 @carousel_bp.route('', methods=["POST"])
 def add_carousels():
     """ This function is used to get the request for adding Carousels to the database

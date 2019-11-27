@@ -4,7 +4,8 @@ from bson import ObjectId
 def save_carousel(image, description, rank, _id=None, count=0):
     from models import db
     rank = int(rank)
-    value = update_ranks(rank)
+    some_rank = int(rank)
+    value = update_ranks(some_rank)
 
     a_carousel = db.Carousel() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
     if value:
@@ -26,20 +27,19 @@ def update_ranks(rank):
 
     from models import db
     rank = int(rank)
-    value = True
+    aldy_handled = ''
     while rank:
-        some_carousel = db.Carousel.find_one({'rank': rank})
+        some_carousel = db.Carousel.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.Carousel.find_one({'rank': rank})
         if not some_carousel:
-            value = False
-            break
+            return True
         rank += 1
         some_carousel['rank'] = rank
         try:
             some_carousel.save()
+            aldy_handled = some_carousel.get('_id')
         except Exception as exp:
-            raise
-            value = False
-            break
+            # raise
+            return False
 
     return True
 
