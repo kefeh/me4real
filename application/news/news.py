@@ -9,9 +9,9 @@ from .utils import save_news, get_news
 def add_news():
     """ This function is used to get the request for adding news to the database
     """
-    data = request.args
+    data = request.get_json()
     description = data.get('description')
-    image = data.get('title')
+    title = data.get('title')
     rank = data.get('rank')
 
     if (not title) or (not description) or (not rank):
@@ -20,13 +20,13 @@ def add_news():
     return jsonify(result=save_news(title, description, rank))
 
 
-@news_bp.route('', methods=["POST"])
+@news_bp.route('', methods=["PUT"])
 def update_news():
     """ This function is used to get the request for adding news to the database
     """
-    data = request.args
+    data = request.get_json()
     description = data.get('description')
-    image = data.get('title')
+    title = data.get('title')
     rank = data.get('rank')
     news_id = data.get('id')
 
