@@ -1,7 +1,7 @@
 from bson import ObjectId
 
 
-def save_news(image, description, rank, _id=None):
+def save_news(title, description, rank, _id=None):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
@@ -10,7 +10,7 @@ def save_news(image, description, rank, _id=None):
     news_item = db.News() if not _id else db.News.find_one({'_id': ObjectId(_id)})
     if value:
         news_item['description'] = description
-        news_item['image'] = image
+        news_item['title'] = title
         news_item['rank'] = rank
         try:
             news_item.save()
@@ -20,7 +20,7 @@ def save_news(image, description, rank, _id=None):
     else:
         return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
 
-    return get_carousels(cond=dict(news_item))
+    return get_news(cond=dict(news_item))
 
 
 def update_ranks(rank):
@@ -29,7 +29,7 @@ def update_ranks(rank):
     rank = int(rank)
     aldy_handled = ''
     while rank:
-        some_news = db.News.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.news.find_one({'rank': rank})
+        some_news = db.News.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.News.find_one({'rank': rank})
         if not some_news:
             return True
         rank += 1
