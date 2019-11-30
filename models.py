@@ -26,7 +26,19 @@ class Carousel(Document):
     required_fields = ['description', 'rank', 'image']
 
 
+class News(Document):
+    __collection__ = 'news'
+    structure = {
+        'title': str,
+        'description': str,
+        'rank': int,
+    }
+
+    use_dot_notation = True
+    required_fields = ['description', 'rank', 'title']
+
+
 # Register the models
-connection.register([User, Carousel])
+connection.register([User, Carousel, News])
 
 db = connection.me4real
