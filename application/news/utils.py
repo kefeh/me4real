@@ -52,3 +52,13 @@ def get_news(maximum=None, cond={}):
     for an_item in news:
         an_item['_id'] = str(an_item['_id'])
     return news if (maximum or not cond) else news[0]
+
+
+def delete_news(news_id):
+    from models import db
+    try:
+        db.News.collection.remove({'_id': ObjectId(news_id)})
+    except Exception as exp:
+        return {'fail_msg': 'Unable to delete the news item with that id'}, 404
+
+    return {'pass_msg': 'successfully deleted'}, 204

@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 
 news_bp = Blueprint('news', __name__, url_prefix='/api/news/')
 
-from .utils import save_news, get_news
+from .utils import save_news, get_news, delete_news
 
 @news_bp.route('', methods=["POST"])
 def add_news():
@@ -42,4 +42,10 @@ def get_news_data():
     data = request.args
     maxim = data.get('max')
     return jsonify(result=get_news(maximum=maxim))
-    
+
+
+@news_bp.route('<string:news_id>', methods=['DELETE'])
+def delete_news_data(news_id):
+    """ This function is used to delete a particular news item """
+    results, status_code = delete_news(news_id)
+    return jsonify(result=results), status_code
