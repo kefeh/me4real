@@ -13,7 +13,8 @@ class Middleware():
         print('thhis is for the request')
         print(request.path)
         print(request.method)
-
+        if request.method == 'DELETE':
+            return self.app(environ, start_response)
         for rule in self.my_app.url_map.iter_rules():
             print(rule)
             print(rule.methods)
