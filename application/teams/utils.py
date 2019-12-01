@@ -1,0 +1,65 @@
+from bson import ObjectId
+
+
+def save_teams(title, description, rank, image, _id=None):
+    from models import db
+    rank = int(rank)
+    some_rank = int(rank)
+    value = update_ranks(some_rank)
+
+    teams_item = db.Team() if not _id else db.Team.find_one({'_id': ObjectId(_id)})
+    if value:
+        teams_item['description'] = description
+        teams_item['title'] = title
+        teams_item['image'] = image
+        teams_item['rank'] = rank
+        try:
+            teams_item.save()
+        except Exception as exp:
+            raise
+            return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
+    else:
+        return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
+
+    return get_teams(cond=dict(teams_item))
+
+
+def update_ranks(rank):
+
+    from models import db
+    rank = int(rank)
+    aldy_handled = ''
+    while rank:
+        some_teams = db.Team.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.Team.find_one({'rank': rank})
+        if not some_teams:
+            return True
+        rank += 1
+        some_teams['rank'] = rank
+        try:
+            some_teams.save()
+            aldy_handled = some_teams.get('_id')
+        except Exception as exp:
+            # raise
+            return False
+
+    return True
+
+
+def get_teams(maximum=None, cond={}):
+    from models import db
+    if maximum:
+        cond['rank'] = {'$lte': int(maximum)}
+    teams = list(db.Team.find({})) if not cond else list(db.Team.find(cond))
+    for an_item in teams:
+        an_item['_id'] = str(an_item['_id'])
+    return teams if (maximum or not cond) else teams[0]
+
+
+def delete_teams(team_mate_id):
+    from models import db
+    try:
+        db.Team.collection.remove({'_id': ObjectId(team_mate_id)})
+    except Exception as exp:
+        return {'fail_msg': 'Unable to delete the teams item with that id'}, 404
+
+    return {'pass_msg': 'successfully deleted'}, 204
