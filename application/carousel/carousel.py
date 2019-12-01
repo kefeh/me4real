@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 
 carousel_bp = Blueprint('carousel', __name__, url_prefix='/api/carousel/')
 
-from .utils import save_carousel, get_carousels
+from .utils import save_carousel, get_carousels, delete_carousel
 
 
 @carousel_bp.route('', methods=["POST"])
@@ -42,4 +42,10 @@ def get_carousel_data():
     data = request.args
     maxim = data.get('max')
     return jsonify(result=get_carousels(maximum=maxim))
-    
+
+
+@carousel_bp.route('<string:carousel_id>', methods=['DELETE'])
+def delete_carousel_data(carousel_id):
+    """ This function is used to delete a particular news item """
+    results, status_code = delete_carousel(carousel_id)
+    return jsonify(result=results), status_code

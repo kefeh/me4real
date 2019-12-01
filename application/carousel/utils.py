@@ -52,3 +52,13 @@ def get_carousels(maximum=None, cond={}):
     for carousel in carousels:
         carousel['_id'] = str(carousel['_id'])
     return carousels if (maximum or not cond) else carousels[0]
+
+
+def delete_carousel(carousel_id):
+    from models import db
+    try:
+        db.Carousel.collection.remove({'_id': ObjectId(carousel_id)})
+    except Exception as exp:
+        return {'fail_msg': 'Unable to delete the news item with that id'}, 404
+
+    return {'pass_msg': 'successfully deleted'}, 204
