@@ -30,6 +30,7 @@ class News(Document):
     __collection__ = 'news'
     structure = {
         'title': str,
+        'image': str,
         'description': str,
         'rank': int,
     }
