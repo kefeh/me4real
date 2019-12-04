@@ -11,13 +11,14 @@ def add_news():
     """
     data = request.get_json()
     description = data.get('description')
+    image = data.get('image')
     title = data.get('title')
     rank = data.get('rank')
 
     if (not title) or (not description) or (not rank):
         return jsonify(result={'failed_msg': "Unanle to save news with missing fields"})
 
-    return jsonify(result=save_news(title, description, rank))
+    return jsonify(result=save_news(title, description, rank, image))
 
 
 @news_bp.route('', methods=["PUT"])
@@ -27,13 +28,14 @@ def update_news():
     data = request.get_json()
     description = data.get('description')
     title = data.get('title')
+    image = data.get('image')
     rank = data.get('rank')
     news_id = data.get('id')
 
-    if (not title) or (not description) or (not rank) or (not id):
+    if (not title) or (not description) or (not rank) or (not news_id):
         return jsonify(result={'failed_msg': "Unanle to save news with missing fields"})
 
-    return jsonify(result=save_news(title, description, rank, _id=id))
+    return jsonify(result=save_news(title, description, rank, image, _id=news_id))
 
 
 @news_bp.route('', methods=['GET'])

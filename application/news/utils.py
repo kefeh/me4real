@@ -1,7 +1,7 @@
 from bson import ObjectId
 
 
-def save_news(title, description, rank, _id=None):
+def save_news(title, description, rank, image, _id=None):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
@@ -11,6 +11,7 @@ def save_news(title, description, rank, _id=None):
     if value:
         news_item['description'] = description
         news_item['title'] = title
+        news_item['image'] = image
         news_item['rank'] = rank
         try:
             news_item.save()
