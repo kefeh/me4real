@@ -14,11 +14,12 @@ def add_carousels():
     description = data.get('description')
     image = data.get('image')
     rank = data.get('rank')
+    title = data.get('title')
 
-    if (not image) or (not description) or (not rank):
+    if (not image) or (not description) or (not rank) or (not title):
         return jsonify(result={'failed_msg': "Unanle to save carousel with missing fields"})
 
-    return jsonify(result=save_carousel(image, description, rank))
+    return jsonify(result=save_carousel(image, description, rank, title))
 
 
 @carousel_bp.route('', methods=['PUT'])
@@ -28,12 +29,13 @@ def update_carousels():
     description = data.get('description')
     image = data.get('image')
     rank = data.get('rank')
+    title = data.get('title')
     carousel_id = data.get('id')
 
-    if (not image) or (not description) or (not rank) or (not carousel_id):
+    if (not image) or (not description) or (not rank) or (not carousel_id) or (not title):
         return jsonify(result={'failed_msg': "Unable to update carousel with missing fields"})
 
-    return jsonify(result=save_carousel(image, description, rank, _id=carousel_id))
+    return jsonify(result=save_carousel(image, description, rank, title, _id=carousel_id))
 
 
 @carousel_bp.route('', methods=['GET'])
