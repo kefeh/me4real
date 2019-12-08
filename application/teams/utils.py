@@ -8,6 +8,8 @@ def save_teams(title, description, rank, image, _id=None):
     value = update_ranks(some_rank)
 
     teams_item = db.Team() if not _id else db.Team.find_one({'_id': ObjectId(_id)})
+    image_name = str(title).replace(' ', '_')
+    image = image_decode_save(image, image_name, 'teams')
     if value:
         teams_item['description'] = description
         teams_item['title'] = title
