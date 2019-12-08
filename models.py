@@ -20,10 +20,11 @@ class Carousel(Document):
         'description': str,
         'rank': int,
         'image': str, # the string here will be in base 64 so that should be noted
+        'title': str,
     }
 
     use_dot_notation = True
-    required_fields = ['description', 'rank', 'image']
+    required_fields = ['description', 'rank', 'image', 'title']
 
 
 class News(Document):
