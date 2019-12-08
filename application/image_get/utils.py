@@ -4,6 +4,7 @@ from application.utils.utils import image_decode_save
 def save_image(image, name):
     return image_decode_save(image, name, 'others')
 
+
 def get_images():
     import os
     from m_dir import BASE_IMAGE_PATH

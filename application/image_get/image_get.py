@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 
 
-image_bp = Blueprint('image', __name__, url_prefix='/api/image/')
+image_bp = Blueprint('images', __name__, url_prefix='/api/images/')
 
-from .utils import save_image, get_images, delete_image
+from .utils import save_image, get_images
 
 @image_bp.route('', methods=["POST"])
 def add_images():
