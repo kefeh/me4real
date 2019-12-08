@@ -1,4 +1,5 @@
 from bson import ObjectId
+from application.utils.utils import image_decode_save
 
 
 def save_teams(title, description, rank, image, _id=None):
