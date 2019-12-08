@@ -1,17 +1,21 @@
 from bson import ObjectId
+from application.utils.utils import image_decode_save
 
 
-def save_carousel(image, description, rank, _id=None, count=0):
+def save_carousel(image, description, rank, title, _id=None, count=0):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
     value = update_ranks(some_rank)
 
     a_carousel = db.Carousel() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
+    image_name = str(title).replace(' ', '_')
+    image = image_decode_save(image, image_name, 'carousel')
     if value:
         a_carousel['description'] = description
         a_carousel['image'] = image
         a_carousel['rank'] = rank
+        a_carousel['title'] = title
         try:
             a_carousel.save()
         except Exception as exp:
