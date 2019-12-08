@@ -26,12 +26,14 @@ connection = Connection(
 from application.carousel.carousel import carousel_bp
 from application.news.news import news_bp
 from application.teams.teams import teams_bp
+from application.image_get.image_get import image_bp
 
 
 # Registering my blueprints
 app.register_blueprint(carousel_bp)
 app.register_blueprint(news_bp)
 app.register_blueprint(teams_bp)
+app.register_blueprint(image_bp)
 
 
 
