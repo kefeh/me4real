@@ -46,8 +46,10 @@ def get_teams_data():
     return jsonify(result=get_teams(maximum=maxim))
 
 
-@teams_bp.route('<string:team_mate_id>', methods=['DELETE'])
-def delete_teams_data(team_mate_id):
+@teams_bp.route('', methods=['DELETE'])
+def delete_teams_data():
     """ This function is used to delete a particular teams item """
+    data = request.args
+    team_mate_id = data.get('id')
     results, status_code = delete_teams(team_mate_id)
     return jsonify(result=results), status_code

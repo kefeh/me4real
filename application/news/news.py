@@ -46,8 +46,10 @@ def get_news_data():
     return jsonify(result=get_news(maximum=maxim))
 
 
-@news_bp.route('<string:news_id>', methods=['DELETE'])
-def delete_news_data(news_id):
+@news_bp.route('', methods=['DELETE'])
+def delete_news_data():
     """ This function is used to delete a particular news item """
+    data = request.args
+    news_id = data.get('id')
     results, status_code = delete_news(news_id)
     return jsonify(result=results), status_code

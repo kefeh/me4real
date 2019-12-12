@@ -46,8 +46,10 @@ def get_carousel_data():
     return jsonify(result=get_carousels(maximum=maxim))
 
 
-@carousel_bp.route('<string:carousel_id>', methods=['DELETE'])
-def delete_carousel_data(carousel_id):
+@carousel_bp.route('', methods=['DELETE'])
+def delete_carousel_data():
     """ This function is used to delete a particular news item """
+    data = request.args
+    carousel_id = data.get('id')
     results, status_code = delete_carousel(carousel_id)
     return jsonify(result=results), status_code
