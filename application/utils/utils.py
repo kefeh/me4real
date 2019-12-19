@@ -34,6 +34,7 @@ def image_decode_save(image, image_name, category):
     response = upload_file(image_path, bucket)
     # content = list_files(bucket)
     print(response)
+    response = {'url': response} else {'error': "Could not save the image contact admin"}
 
     return response
 
@@ -46,7 +47,6 @@ def upload_file(file_name, bucket):
     s3_client = boto3.client('s3')
     with open(file_name, "rb") as f:
         response = s3_client.upload_fileobj(f, bucket, object_name, ExtraArgs={'ContentType': "image/jpeg"})
-
 
     response = f'{BASE_URl}/{object_name}'
 

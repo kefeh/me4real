@@ -16,10 +16,15 @@ def add_images():
     if (not image) or (not name):
         return jsonify(result={'failed_msg': "Unanle to save carousel with missing fields"})
 
-    return jsonify(result=save_image(image, name))
+    resp = save_image(image, name)
+    if 'error' in response:
+        status_code = 400
+    else: 
+        status_code = 200
+    return jsonify(result= resp), status_code
 
 
 @image_bp.route('', methods=["GET"])
-def get_images():
+def get_all_images():
     """ This function gets all the images that were added using the above post request"""
     return jsonify(result=get_images())
