@@ -16,6 +16,6 @@ def get_images():
     # files_path = [os.path.abspath(x) for x in os.listdir(new_path)]
     bucket = 'me4real-storage'
     all_images = list_files(bucket)
-    file_urls = [f'{BASE_URl}/{object_value['key']}' for object_value in all_images]
+    file_urls = [f"{BASE_URl}/{object_value['key']}" for object_value in all_images]
 
     return file_urls

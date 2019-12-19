@@ -34,7 +34,7 @@ def image_decode_save(image, image_name, category):
     response = upload_file(image_path, bucket)
     # content = list_files(bucket)
     print(response)
-    response = {'url': response} else {'error': "Could not save the image contact admin"}
+    response = {'url': response} if response else {'error': "Could not save the image contact admin"}
 
     return response
 
