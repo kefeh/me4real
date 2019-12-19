@@ -1,8 +1,17 @@
 import base64
+import os
 import boto3
 
 
-BASE_URl = "http://me4real-storage.s3.amazonaws.com"
+S3_BUCKET = os.environ.get("S3_BUCKET_NAME")
+S3_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+S3_SECRET = os.environ.get("AWS_SECRET_ACCESS_KEY")
+BASE_URl = 'http://{}.s3.amazonaws.com'.format(S3_BUCKET)# Connect to S3
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=S3_KEY,
+    aws_secret_access_key=S3_SECRET
+)
 
 
 def image_decode_save(image, image_name, category):
@@ -44,7 +53,6 @@ def upload_file(file_name, bucket):
     Function to upload a file to an S3 bucket
     """
     object_name = file_name.split('/')[-1]
-    s3_client = boto3.client('s3')
     with open(file_name, "rb") as f:
         response = s3_client.upload_fileobj(f, bucket, object_name, ExtraArgs={'ContentType': "image/jpeg"})
 
@@ -57,9 +65,8 @@ def list_files(bucket):
     """
     Function to list files in a given S3 bucket
     """
-    s3 = boto3.client('s3')
     contents = []
-    for item in s3.list_objects(Bucket=bucket)['Contents']:
+    for item in s3_client.list_objects(Bucket=bucket)['Contents']:
         contents.append(item)
 
     return contents

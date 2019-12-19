@@ -11,6 +11,10 @@ def save_teams(title, description, rank, image, _id=None):
     teams_item = db.Team() if not _id else db.Team.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
     image = image_decode_save(image, image_name, 'teams')
+    if 'error' in image:
+        return {'failed_msg': 'Could not upload image to the sever'}
+    else:
+        image = image.get('url')
     if value:
         teams_item['description'] = description
         teams_item['title'] = title
