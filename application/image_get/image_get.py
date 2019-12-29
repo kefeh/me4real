@@ -3,7 +3,7 @@ from flask import Blueprint, request, jsonify
 
 image_bp = Blueprint('images', __name__, url_prefix='/api/images/')
 
-from .utils import save_image, get_images
+from .utils import save_image, get_images, delete_image
 
 @image_bp.route('', methods=["POST"])
 def add_images():
@@ -28,3 +28,21 @@ def add_images():
 def get_all_images():
     """ This function gets all the images that were added using the above post request"""
     return jsonify(result=get_images())
+
+
+@image_bp.route('', methods=['DELETE'])
+def delete_an_image():
+    data = request.args
+    image_url = data.get('image_name')
+
+    value = delete_image(image_url)
+
+    result = {}
+    if value:
+        resp = {'pass_msg': 'Delete Successful'}
+        status_code = 204
+    else:
+        resp = {'fail_msg': 'Unable to delete image'}
+        status_code = 404
+
+    return jsonify(result=resp), status_code

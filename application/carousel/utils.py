@@ -1,5 +1,5 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save
+from application.utils.utils import image_decode_save, delete_image_from_bucket
 
 
 def save_carousel(image, description, rank, title, _id=None, count=0):
@@ -65,6 +65,11 @@ def get_carousels(maximum=None, cond={}):
 def delete_carousel(carousel_id):
     from models import db
     try:
+        a_carousel = db.Carousel.find_one({'_id': ObjectId(carousel_id)})
+        image_url = a_carousel.get('image')
+        image_key = image_url.split('/')[-1]
+
+        delete_image_from_bucket(image_key)
         db.Carousel.collection.remove({'_id': ObjectId(carousel_id)})
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the news item with that id'}, 404

@@ -65,6 +65,11 @@ def get_news(maximum=None, cond={}):
 def delete_news(news_id):
     from models import db
     try:
+        a_news = db.News.find_one({'_id': ObjectId(news_id)})
+        image_url = a_news.get('image')
+        image_key = image_url.split('/')[-1]
+
+        delete_image_from_bucket(image_key)
         db.News.collection.remove({'_id': ObjectId(news_id)})
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the news item with that id'}, 404

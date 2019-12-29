@@ -65,6 +65,12 @@ def get_teams(maximum=None, cond={}):
 def delete_teams(team_mate_id):
     from models import db
     try:
+        a_team = db.Team.find_one({'_id': ObjectId(team_id)})
+        image_url = a_team.get('image')
+        image_key = image_url.split('/')[-1]
+
+        delete_image_from_bucket(image_key)
+    
         db.Team.collection.remove({'_id': ObjectId(team_mate_id)})
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the teams item with that id'}, 404

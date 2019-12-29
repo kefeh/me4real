@@ -70,3 +70,8 @@ def list_files(bucket):
         contents.append(item)
 
     return contents
+
+
+def delete_image_from_bucket(file_name):
+    """this function is used to delete the images in the bucket per filename"""
+    s3_client.delete_object(Bucket=bucket, Key=file_name)
