@@ -45,6 +45,13 @@ def image_decode_save(image, image_name, category):
     print(response)
     response = {'url': response} if response else {'error': "Could not save the image contact admin"}
 
+    # Delete the temporal images folder and all its contents
+    import shutil
+    try:
+        shutil.rmtree(BASE_IMAGE_PATH)
+    except OSError as e:
+        print ("Error: %s - %s." % (e.filename, e.strerror))
+
     return response
 
 
