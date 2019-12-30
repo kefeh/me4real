@@ -13,13 +13,18 @@ def add_images():
     image = data.get('image')
     name = data.get('name')
 
-    if (not image) or (not name):
-        return jsonify(result={'failed_msg': "Unanle to save carousel with missing fields"})
+    if (not image):
+        return jsonify(result={'failed_msg': "Unanle to save image with missing fields"})
+
+    if (not name)
+        from datetime import datetime
+        ts = int(datetime.now().timestamp())
+        name = 'me4real' + str(ts)
 
     resp = save_image(image, name)
     if 'error' in response:
         status_code = 400
-    else: 
+    else:
         status_code = 200
     return jsonify(result= resp), status_code
 
