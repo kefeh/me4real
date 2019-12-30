@@ -5,6 +5,7 @@
 # https://developers.google.com/explorer-help/guides/code_samples#python
 
 import os
+import base64
 import pickle
 
 import google_auth_oauthlib.flow
@@ -51,44 +52,72 @@ youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=creds)
 
 
-def save_video(file_name, title, description):
-    request = youtube.videos().insert(
-        part="snippet,status,player",
-        body={
-          "snippet": {
-            "categoryId": "22",
-            "description": description,
-            "title": title
-          },
-          "status": {
-            "privacyStatus": "public"
-          }
-        },
-        media_body=MediaFileUpload(file_name)
-    )
-    response = request.execute()
+def upload_video(file_name, title, description):
+    try:
+        request = youtube.videos().insert(
+            part="snippet,status,player",
+            body={
+            "snippet": {
+                "categoryId": "22",
+                "description": description,
+                "title": title
+            },
+            "status": {
+                "privacyStatus": "public"
+            }
+            },
+            media_body=MediaFileUpload(file_name)
+        )
+        response = request.execute()
 
-    # the response has a player key which looks like 
-    #'player': {'embedHtml': '<iframe width="480" height="270" '
-                            # 'src="//www.youtube.com/embed/U73sYiT1R8M" '
-                            # 'frameborder="0" allow="accelerometer; '
-                            # 'autoplay; encrypted-media; gyroscope; '
-                            # 'picture-in-picture" '
-                            # 'allowfullscreen></iframe>'},
+        # the response has a player key which looks like 
+        #'player': {'embedHtml': '<iframe width="480" height="270" '
+                                # 'src="//www.youtube.com/embed/U73sYiT1R8M" '
+                                # 'frameborder="0" allow="accelerometer; '
+                                # 'autoplay; encrypted-media; gyroscope; '
+                                # 'picture-in-picture" '
+                                # 'allowfullscreen></iframe>'},
 
-    embedHTML = response.get('player').get('embedHtml')
-    link = embedHTML.split("'src=", 1)[1].split("'", 1)[0].strip('"')
-    return link
-
-
-def get_embedded_link(ID):
-    request = youtube.videos().list(
-        part="snippet,contentDetails,statistics,player",
-        id=ID
-    )
-
-    response = request.execute()
-    from pprint import pprint
-    pprint(response)
+        embedHTML = response.get('player').get('embedHtml')
+        link = embedHTML.split("'src=", 1)[1].split("'", 1)[0].strip('"')
+    except Exception as exp:
+        print(exp)
+        return None
+    return link, title
 
 
+def video_decode_save(video, title, description):
+    """
+        This function takes in an image and an id/category which it will use as an image name and
+        then saves the image in the images folder and returns the appropriate path name for that
+        image
+    """
+
+    bucket = 'me4real-storage'
+
+    video_info = video.split(';')[0].split(':')[-1]
+    some_video = video.split(';')[1].split('base64,')[-1] + '=='
+    video_ext = video_info.split('/')[-1]
+    from m_dir import BASE_video_PATH
+    import os
+
+    f_video_name = video_name + '.' + video_ext
+    video_path = os.path.join(BASE_VIDEO_PATH, f_video_name)
+    # video_data = base64.b64decode(video)
+    if not os.path.exists(BASE_VIDEO_PATH):
+        os.makedirs(BASE_VIDEO_PATH)
+    with open(video_path, 'wb') as video_file:
+        video_file.write(base64.decodebytes(some_video.encode()))
+
+    response = upload_video(video_path, title, description)
+    print(response)
+    response = {'url': response[0], 'title': response[1]} if response else {'error': "Could not save the video contact admin"}
+
+    # Delete the temporal videos folder and all its contents
+    import shutil
+    try:
+        shutil.rmtree(BASE_VIDEO_PATH)
+    except OSError as e:
+        print ("Error: %s - %s." % (e.filename, e.strerror))
+
+    return response
