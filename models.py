@@ -53,7 +53,17 @@ class Team(Document):
     required_fields = ['image', 'rank', 'title']
 
 
+class Subscriber(Document):
+    __collection__ = 'subscribers'
+    structure = {
+        'email': str
+    }
+
+    use_dot_notation = True
+    required_fields = ['email']
+
+
 # Register the models
-connection.register([User, Carousel, News, Team])
+connection.register([User, Carousel, News, Team, Subscriber])
 
 db = connection.me4real
