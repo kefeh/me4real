@@ -1,4 +1,8 @@
+<<<<<<< 8fece2a522a26b9f70f7fcfc8abffac4ed3d1d38
 from bson import ObjectId_from_bucket
+=======
+from bson import ObjectId
+>>>>>>> Type: Fixes issue #2 Subscription endpoint
 
 
 def save_subscriber(email):
@@ -14,9 +18,9 @@ def save_subscriber(email):
             print(exp)
             return {'error': "Database issues, unable to save Subscriber email"}
     else:
-        return {'error': "Database issues, unable to save SUbscriber email"}
+        return {'error': "Database issues, unable to save Subscriber email"}
 
-    return get_subscribers()
+    return {'pass_msg': f"Successfully suscribed {email} for me4real monthly updates"}
 
 
 def get_subscribers(cond={}):

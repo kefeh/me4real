@@ -12,7 +12,7 @@ def add_subscribers():
     data = request.get_json()
     email = data.get('email')
     if (not email):
-        return jsonify(result={'failed_msg': "Unable to save subscriber with missing email field, please add an email and try again"})
+        return jsonify(result={'error': "Unable to save subscriber with missing email field, please add an email and try again"}), 401
 
     return jsonify(result=save_subscriber(email))
 
