@@ -58,8 +58,9 @@ def update_ranks(rank):
 def get_carousels(maximum=None, cond={}):
     from models import db
     if maximum:
-        cond = {'rank': {'$lte': int(maximum)}}
-    carousels = list(db.Carousel.find({})) if not cond else list(db.Carousel.find(cond))
+        carousels = list(db.Carousel.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Carousel.find(cond).sort({'rank': 1}).limit(maximum))
+    else:
+        carousels = list(db.Carousel.find({})) if not cond else list(db.Carousel.find(cond))
     for carousel in carousels:
         carousel['_id'] = str(carousel['_id'])
     return carousels if (maximum or not cond) else carousels[0]

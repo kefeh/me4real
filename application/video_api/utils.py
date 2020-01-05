@@ -13,15 +13,16 @@ import googleapiclient.discovery
 import googleapiclient.errors
 
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 from googleapiclient.http import MediaFileUpload
 
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+from m_dir import BASE_PATH
 
 # the token.pickel file holds the credentials and you need to deploy it to server to be able to
 # access your email from the server
-TOKEN_PICKLE = f"{BASE_DIR}/token.pickle"
-CREDENTIALS = f"{BASE_DIR}/credentials.json"
+TOKEN_PICKLE = f"{BASE_PATH}/token.pickle"
+CREDENTIALS = f"{BASE_PATH}/credentials.json"
 
 SCOPES = ["https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/youtube.upload"]
 

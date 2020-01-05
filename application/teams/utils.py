@@ -58,8 +58,9 @@ def update_ranks(rank):
 def get_teams(maximum=None, cond={}):
     from models import db
     if maximum:
-        cond['rank'] = {'$lte': int(maximum)}
-    teams = list(db.Team.find({})) if not cond else list(db.Team.find(cond))
+        teams = list(db.Team.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Team.find(cond).sort({'rank': 1}).limit(maximum))
+    else:
+        teams = list(db.Team.find({})) if not cond else list(db.Team.find(cond))
     for an_item in teams:
         an_item['_id'] = str(an_item['_id'])
     return teams if (maximum or not cond) else teams[0]

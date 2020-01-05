@@ -58,8 +58,9 @@ def update_ranks(rank):
 def get_news(maximum=None, cond={}):
     from models import db
     if maximum:
-        cond['rank'] = {'$lte': int(maximum)}
-    news = list(db.News.find({})) if not cond else list(db.News.find(cond))
+        news = list(db.News.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.News.find(cond).sort({'rank': 1}).limit(maximum))
+    else:
+        news = list(db.News.find({})) if not cond else list(db.News.find(cond))
     for an_item in news:
         an_item['_id'] = str(an_item['_id'])
     return news if (maximum or not cond) else news[0]

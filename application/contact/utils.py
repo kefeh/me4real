@@ -58,8 +58,9 @@ def update_ranks(rank):
 def get_contacts(maximum=None, cond={}):
     from models import db
     if maximum:
-        cond = {'rank': {'$lte': int(maximum)}}
-    contacts = list(db.Contact.find({})) if not cond else list(db.Contact.find(cond))
+        contacts = list(db.Contact.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Contact.find(cond).sort({'rank': 1}).limit(maximum))
+    else:
+        contacts = list(db.Contact.find({})) if not cond else list(db.Contact.find(cond))
     for contact in contacts:
         contact['_id'] = str(contact['_id'])
     return contacts if (maximum or not cond) else contacts[0]

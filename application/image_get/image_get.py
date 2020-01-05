@@ -16,7 +16,7 @@ def add_images():
     if (not image):
         return jsonify(result={'failed_msg': "Unanle to save image with missing fields"})
 
-    if (not name)
+    if (not name):
         from datetime import datetime
         ts = int(datetime.now().timestamp())
         name = 'me4real' + str(ts)
