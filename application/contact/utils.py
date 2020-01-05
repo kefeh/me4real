@@ -1,34 +1,37 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save, delete_image_from_bucket
+from application.utils.utils import image_decode_save, delete_image_from_bucket, BASE_URl
 
 
-def save_carousel(image, description, rank, title, _id=None, count=0):
+def save_contact(image, description, rank, title, _id=None, count=0):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
     value = update_ranks(some_rank)
 
-    a_carousel = db.Carousel() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
+    a_contact = db.Contact() if not _id else db.Contact.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
-    image = image_decode_save(image, image_name, 'carousel')
-    if 'error' in image:
-        return {'failed_msg': 'Could not upload image to the sever'}
+    if BASE_URl in image:
+        pass
     else:
-        image = image.get('url')
+        image = image_decode_save(image, image_name, 'contact')
+        if 'error' in image:
+            return {'failed_msg': 'Could not upload image to the sever'}
+        else:
+            image = image.get('url')
     if value:
-        a_carousel['description'] = description
-        a_carousel['image'] = image
-        a_carousel['rank'] = rank
-        a_carousel['title'] = title
+        a_contact['description'] = description
+        a_contact['image'] = image
+        a_contact['rank'] = rank
+        a_contact['title'] = title
         try:
-            a_carousel.save()
+            a_contact.save()
         except Exception as exp:
             raise
-            return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
+            return {'failed_msg': "Database issues, unable to save contact, contact admin"}
     else:
-        return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
+        return {'failed_msg': "Database issues, unable to save contact, contact admin"}
 
-    return get_carousels(cond=dict(a_carousel))
+    return get_contacts(cond=dict(a_contact))
 
 
 def update_ranks(rank):
@@ -37,14 +40,14 @@ def update_ranks(rank):
     rank = int(rank)
     aldy_handled = ''
     while rank:
-        some_carousel = db.Carousel.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.Carousel.find_one({'rank': rank})
-        if not some_carousel:
+        some_contact = db.Contact.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.Contact.find_one({'rank': rank})
+        if not some_contact:
             return True
         rank += 1
-        some_carousel['rank'] = rank
+        some_contact['rank'] = rank
         try:
-            some_carousel.save()
-            aldy_handled = some_carousel.get('_id')
+            some_contact.save()
+            aldy_handled = some_contact.get('_id')
         except Exception as exp:
             # raise
             return False
@@ -52,25 +55,25 @@ def update_ranks(rank):
     return True
 
 
-def get_carousels(maximum=None, cond={}):
+def get_contacts(maximum=None, cond={}):
     from models import db
     if maximum:
         cond = {'rank': {'$lte': int(maximum)}}
-    carousels = list(db.Carousel.find({})) if not cond else list(db.Carousel.find(cond))
-    for carousel in carousels:
-        carousel['_id'] = str(carousel['_id'])
-    return carousels if (maximum or not cond) else carousels[0]
+    contacts = list(db.Contact.find({})) if not cond else list(db.Contact.find(cond))
+    for contact in contacts:
+        contact['_id'] = str(contact['_id'])
+    return contacts if (maximum or not cond) else contacts[0]
 
 
-def delete_carousel(carousel_id):
+def delete_contact(contact_id):
     from models import db
     try:
-        a_carousel = db.Carousel.find_one({'_id': ObjectId(carousel_id)})
-        image_url = a_carousel.get('image')
+        a_contact = db.Contact.find_one({'_id': ObjectId(contact_id)})
+        image_url = a_contact.get('image')
         image_key = image_url.split('/')[-1]
 
         delete_image_from_bucket(image_key)
-        db.Carousel.collection.remove({'_id': ObjectId(carousel_id)})
+        db.Contact.collection.remove({'_id': ObjectId(contact_id)})
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the news item with that id'}, 404
 

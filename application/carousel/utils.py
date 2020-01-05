@@ -1,5 +1,5 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save, delete_image_from_bucket
+from application.utils.utils import image_decode_save, delete_image_from_bucket, BASE_URl
 
 
 def save_carousel(image, description, rank, title, _id=None, count=0):
@@ -10,11 +10,14 @@ def save_carousel(image, description, rank, title, _id=None, count=0):
 
     a_carousel = db.Carousel() if not _id else db.Carousel.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
-    image = image_decode_save(image, image_name, 'carousel')
-    if 'error' in image:
-        return {'failed_msg': 'Could not upload image to the sever'}
+    if BASE_URl in image:
+        pass
     else:
-        image = image.get('url')
+        image = image_decode_save(image, image_name, 'carousel')
+        if 'error' in image:
+            return {'failed_msg': 'Could not upload image to the sever'}
+        else:
+            image = image.get('url')
     if value:
         a_carousel['description'] = description
         a_carousel['image'] = image

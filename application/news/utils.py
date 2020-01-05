@@ -1,5 +1,5 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save
+from application.utils.utils import image_decode_save, BASE_URl
 
 
 def save_news(title, description, rank, image, _id=None):
@@ -10,11 +10,14 @@ def save_news(title, description, rank, image, _id=None):
 
     news_item = db.News() if not _id else db.News.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
-    image = image_decode_save(image, image_name, 'news')
-    if 'error' in image:
-        return {'failed_msg': 'Could not upload image to the sever'}
+    if BASE_URl in image:
+        pass
     else:
-        image = image.get('url')
+        image = image_decode_save(image, image_name, 'news')
+        if 'error' in image:
+            return {'failed_msg': 'Could not upload image to the sever'}
+        else:
+            image = image.get('url')
     if value:
         news_item['description'] = description
         news_item['title'] = title

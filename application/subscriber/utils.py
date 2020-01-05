@@ -1,8 +1,4 @@
-<<<<<<< 8fece2a522a26b9f70f7fcfc8abffac4ed3d1d38
-from bson import ObjectId_from_bucket
-=======
 from bson import ObjectId
->>>>>>> Type: Fixes issue #2 Subscription endpoint
 
 
 def save_subscriber(email):
