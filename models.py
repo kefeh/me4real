@@ -40,6 +40,34 @@ class News(Document):
     required_fields = ['description', 'rank', 'title']
 
 
+
+class Program(Document):
+    __collection__ = 'programs'
+    structure = {
+        'title': str,
+        'image': str,
+        'description': str,
+        'rank': int,
+    }
+
+    use_dot_notation = True
+    required_fields = ['description', 'rank', 'title']
+
+
+class Project(Document):
+    __collection__ = 'projects'
+    structure = {
+        'title': str,
+        'image': str,
+        'description': str,
+        'rank': int,
+    }
+
+    use_dot_notation = True
+    required_fields = ['description', 'rank', 'title']
+
+
+
 class Team(Document):
     __collection__ = 'teams'
     structure = {
