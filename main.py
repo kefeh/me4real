@@ -31,6 +31,7 @@ from application.video_api.video import video_bp
 from application.subscriber.subscriber import subscriber_bp
 from application.programs.programs import programs_bp
 from application.projects.projects import projects_bp
+from application.event_api.events import events_bp
 
 
 # Registering my blueprints
@@ -42,6 +43,7 @@ app.register_blueprint(video_bp)
 app.register_blueprint(subscriber_bp)
 app.register_blueprint(programs_bp)
 app.register_blueprint(projects_bp)
+app.register_blueprint(events_bp)
 
 
 if __name__ == '__main__':
