@@ -67,6 +67,18 @@ class Project(Document):
     required_fields = ['description', 'rank', 'title']
 
 
+class Event(Document):
+    __collection__ = 'events'
+    structure = {
+        'title': str,
+        'image': str,
+        'description': str,
+        'rank': int,
+    }
+
+    use_dot_notation = True
+    required_fields = ['description', 'rank', 'title']
+
 
 class Team(Document):
     __collection__ = 'teams'
