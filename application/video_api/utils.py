@@ -44,7 +44,7 @@ if not creds or not creds.valid:
     else:
         flow = InstalledAppFlow.from_client_secrets_file(
             CREDENTIALS, SCOPES)
-        creds = flow.run_local_server()
+        creds = flow.run_local_server(port=8081)
     # Save the credentials for the next run
     with open(TOKEN_PICKLE, 'wb') as token:
         pickle.dump(creds, token)
