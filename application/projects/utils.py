@@ -8,7 +8,7 @@ def save_projects(title, description, rank, image, _id=None):
     some_rank = int(rank)
     value = update_ranks(some_rank)
 
-    projects_item = db.Project.) if not _id else db.Project.find_one({'_id': ObjectId(_id)})
+    projects_item = db.Project() if not _id else db.Project.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
     if BASE_URl in image:
         pass
