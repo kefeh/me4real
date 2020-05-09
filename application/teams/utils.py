@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_teams = db.Team.find_one({'rank': fwd_rank})
+        if not some_teams:
+            return True
+        some_teams['rank'] = rank
+        try:
+            some_teams.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_teams(maximum=None, cond={}):
     from models import db
     if maximum:
-        teams = list(db.Team.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Team.find(cond).sort({'rank': 1}).limit(maximum))
+        teams = list(db.Team.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Team.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         teams = list(db.Team.find({})) if not cond else list(db.Team.find(cond))
     for an_item in teams:
@@ -76,6 +95,7 @@ def delete_teams(team_mate_id):
         delete_image_from_bucket(image_key)
     
         db.Team.collection.remove({'_id': ObjectId(team_mate_id)})
+        update_rank_reverse(a_team['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the teams item with that id'}, 404
 

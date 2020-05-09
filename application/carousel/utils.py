@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_carousel = db.Carousel.find_one({'rank': fwd_rank})
+        if not some_carousel:
+            return True
+        some_carousel['rank'] = rank
+        try:
+            some_carousel.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_carousels(maximum=None, cond={}):
     from models import db
     if maximum:
-        carousels = list(db.Carousel.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Carousel.find(cond).sort({'rank': 1}).limit(maximum))
+        carousels = list(db.Carousel.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Carousel.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         carousels = list(db.Carousel.find({})) if not cond else list(db.Carousel.find(cond))
     for carousel in carousels:
@@ -75,6 +94,7 @@ def delete_carousel(carousel_id):
 
         delete_image_from_bucket(image_key)
         db.Carousel.collection.remove({'_id': ObjectId(carousel_id)})
+        update_rank_reverse(a_carousel['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the news item with that id'}, 404
 

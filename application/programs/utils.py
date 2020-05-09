@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_programs = db.Program.find_one({'rank': fwd_rank})
+        if not some_programs:
+            return True
+        some_programs['rank'] = rank
+        try:
+            some_programs.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_programs(maximum=None, cond={}):
     from models import db
     if maximum:
-        programs = list(db.Program.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Program.find(cond).sort({'rank': 1}).limit(maximum))
+        programs = list(db.Program.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Program.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         programs = list(db.Program.find({})) if not cond else list(db.Program.find(cond))
     for an_item in programs:
@@ -75,6 +94,7 @@ def delete_programs(programs_id):
 
         delete_image_from_bucket(image_key)
         db.Program.collection.remove({'_id': ObjectId(programs_id)})
+        update_rank_reverse(a_programs['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the programs item with that id'}, 404
 

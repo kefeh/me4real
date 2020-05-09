@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_events = db.Event.find_one({'rank': fwd_rank})
+        if not some_events:
+            return True
+        some_events['rank'] = rank
+        try:
+            some_events.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_events(maximum=None, cond={}):
     from models import db
     if maximum:
-        events = list(db.Event.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Event.find(cond).sort({'rank': 1}).limit(maximum))
+        events = list(db.Event.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Event.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         events = list(db.Event.find({})) if not cond else list(db.Event.find(cond))
     for an_item in events:
@@ -75,6 +94,7 @@ def delete_events(events_id):
 
         delete_image_from_bucket(image_key)
         db.Event.collection.remove({'_id': ObjectId(events_id)})
+        update_rank_reverse(a_events['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the events item with that id'}, 404
 

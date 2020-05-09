@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_projects = db.Project.find_one({'rank': fwd_rank})
+        if not some_projects:
+            return True
+        some_projects['rank'] = rank
+        try:
+            some_projects.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_projects(maximum=None, cond={}):
     from models import db
     if maximum:
-        projects = list(db.Project.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Project.find(cond).sort({'rank': 1}).limit(maximum))
+        projects = list(db.Project.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Project.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         projects = list(db.Project.find({})) if not cond else list(db.Project.find(cond))
     for an_item in projects:
@@ -75,6 +94,7 @@ def delete_projects(projects_id):
 
         delete_image_from_bucket(image_key)
         db.Project.collection.remove({'_id': ObjectId(projects_id)})
+        update_rank_reverse(a_projects['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the projects item with that id'}, 404
 

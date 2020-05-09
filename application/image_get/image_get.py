@@ -22,7 +22,7 @@ def add_images():
         name = 'me4real' + str(ts)
 
     resp = save_image(image, name)
-    if 'error' in response:
+    if 'error' in resp:
         status_code = 400
     else:
         status_code = 200

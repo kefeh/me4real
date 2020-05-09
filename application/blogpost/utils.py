@@ -2,36 +2,36 @@ from bson import ObjectId
 from application.utils.utils import image_decode_save, BASE_URl
 
 
-def save_news(title, description, rank, image, _id=None):
+def save_blog(title, description, rank, image, _id=None):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
     value = update_ranks(some_rank)
 
-    news_item = db.News() if not _id else db.News.find_one({'_id': ObjectId(_id)})
+    blog_item = db.Blog() if not _id else db.Blog.find_one({'_id': ObjectId(_id)})
     image_name = str(title).replace(' ', '_')
     if BASE_URl in image:
         pass
     else:
-        image = image_decode_save(image, image_name, 'news')
+        image = image_decode_save(image, image_name, 'blog')
         if 'error' in image:
             return {'failed_msg': 'Could not upload image to the sever'}
         else:
             image = image.get('url')
     if value:
-        news_item['description'] = description
-        news_item['title'] = title
-        news_item['image'] = image
-        news_item['rank'] = rank
+        blog_item['description'] = description
+        blog_item['title'] = title
+        blog_item['image'] = image
+        blog_item['rank'] = rank
         try:
-            news_item.save()
+            blog_item.save()
         except Exception as exp:
             raise
             return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
     else:
         return {'failed_msg': "Database issues, unable to save Carousel, contact admin"}
 
-    return get_news(cond=dict(news_item))
+    return get_blog(cond=dict(blog_item))
 
 
 def update_ranks(rank):
@@ -40,14 +40,14 @@ def update_ranks(rank):
     rank = int(rank)
     aldy_handled = ''
     while rank:
-        some_news = db.News.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.News.find_one({'rank': rank})
-        if not some_news:
+        some_blog = db.Blog.find_one({'_id': {'$ne': ObjectId(aldy_handled)}, 'rank': rank}) if aldy_handled else db.Blog.find_one({'rank': rank})
+        if not some_blog:
             return True
         rank += 1
-        some_news['rank'] = rank
+        some_blog['rank'] = rank
         try:
-            some_news.save()
-            aldy_handled = some_news.get('_id')
+            some_blog.save()
+            aldy_handled = some_blog.get('_id')
         except Exception as exp:
             # raise
             return False
@@ -61,12 +61,12 @@ def update_rank_reverse(rank):
     rank = int(rank)
     while rank:
         fwd_rank = rank + 1
-        some_news = db.News.find_one({'rank': fwd_rank})
-        if not some_news:
+        some_blog = db.Blog.find_one({'rank': fwd_rank})
+        if not some_blog:
             return True
-        some_news['rank'] = rank
+        some_blog['rank'] = rank
         try:
-            some_news.save()
+            some_blog.save()
             rank += 1
         except Exception as exp:
             return False
@@ -74,28 +74,28 @@ def update_rank_reverse(rank):
     return True
 
 
-def get_news(maximum=None, cond={}):
+def get_blog(maximum=None, cond={}):
     from models import db
     if maximum:
-        news = list(db.News.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.News.find(cond).sort([('rank', 1)]).limit(int(maximum)))
+        blog = list(db.Blog.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Blog.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
-        news = list(db.News.find({})) if not cond else list(db.News.find(cond))
-    for an_item in news:
+        blog = list(db.Blog.find({})) if not cond else list(db.Blog.find(cond))
+    for an_item in blog:
         an_item['_id'] = str(an_item['_id'])
-    return news if (maximum or not cond) else news[0]
+    return blog if (maximum or not cond) else blog[0]
 
 
-def delete_news(news_id):
+def delete_blog(blog_id):
     from models import db
     try:
-        a_news = db.News.find_one({'_id': ObjectId(news_id)})
-        image_url = a_news.get('image')
+        a_blog = db.Blog.find_one({'_id': ObjectId(blog_id)})
+        image_url = a_blog.get('image')
         image_key = image_url.split('/')[-1]
 
         delete_image_from_bucket(image_key)
-        db.News.collection.remove({'_id': ObjectId(news_id)})
-        update_rank_reverse(a_news['rank'])
+        db.Blog.collection.remove({'_id': ObjectId(blog_id)})
+        update_rank_reverse(a_blog['rank'])
     except Exception as exp:
-        return {'fail_msg': 'Unable to delete the news item with that id'}, 404
+        return {'fail_msg': 'Unable to delete the blog item with that id'}, 404
 
     return {'pass_msg': 'successfully deleted'}, 204

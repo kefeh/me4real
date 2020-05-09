@@ -55,10 +55,29 @@ def update_ranks(rank):
     return True
 
 
+def update_rank_reverse(rank):
+
+    from models import db
+    rank = int(rank)
+    while rank:
+        fwd_rank = rank + 1
+        some_contact = db.Contact.find_one({'rank': fwd_rank})
+        if not some_contact:
+            return True
+        some_contact['rank'] = rank
+        try:
+            some_contact.save()
+            rank += 1
+        except Exception as exp:
+            return False
+    
+    return True
+
+
 def get_contacts(maximum=None, cond={}):
     from models import db
     if maximum:
-        contacts = list(db.Contact.find({}).sort({'rank': 1}).limit(maximum)) if not cond else list(db.Contact.find(cond).sort({'rank': 1}).limit(maximum))
+        contacts = list(db.Contact.find({}).sort([('rank', 1)]).limit(int(maximum))) if not cond else list(db.Contact.find(cond).sort([('rank', 1)]).limit(int(maximum)))
     else:
         contacts = list(db.Contact.find({})) if not cond else list(db.Contact.find(cond))
     for contact in contacts:
@@ -75,6 +94,7 @@ def delete_contact(contact_id):
 
         delete_image_from_bucket(image_key)
         db.Contact.collection.remove({'_id': ObjectId(contact_id)})
+        update_rank_reverse(a_contact['rank'])
     except Exception as exp:
         return {'fail_msg': 'Unable to delete the news item with that id'}, 404
 

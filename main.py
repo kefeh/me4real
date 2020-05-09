@@ -32,6 +32,8 @@ from application.subscriber.subscriber import subscriber_bp
 from application.programs.programs import programs_bp
 from application.projects.projects import projects_bp
 from application.event_api.events import events_bp
+from application.blogpost.blog import blog_bp
+from application.testimonials.testimonial import testimonial_bp
 
 
 # Registering my blueprints
@@ -44,6 +46,8 @@ app.register_blueprint(subscriber_bp)
 app.register_blueprint(programs_bp)
 app.register_blueprint(projects_bp)
 app.register_blueprint(events_bp)
+app.register_blueprint(blog_bp)
+app.register_blueprint(testimonial_bp)
 
 
 if __name__ == '__main__':
