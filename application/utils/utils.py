@@ -12,7 +12,7 @@ s3_client = boto3.client(
     aws_access_key_id=S3_KEY,
     aws_secret_access_key=S3_SECRET
 )
-
+bucket = 'me4real-storage'
 
 def image_decode_save(image, image_name, category):
     """

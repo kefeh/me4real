@@ -1,5 +1,5 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save, BASE_URl
+from application.utils.utils import image_decode_save, BASE_URl, delete_image_from_bucket
 
 
 def save_news(title, description, rank, image, _id=None):
@@ -87,15 +87,15 @@ def get_news(maximum=None, cond={}):
 
 def delete_news(news_id):
     from models import db
-    try:
-        a_news = db.News.find_one({'_id': ObjectId(news_id)})
-        image_url = a_news.get('image')
-        image_key = image_url.split('/')[-1]
+# try:
+    a_news = db.News.find_one({'_id': ObjectId(news_id)})
+    image_url = a_news.get('image')
+    image_key = image_url.split('/')[-1]
 
-        delete_image_from_bucket(image_key)
-        db.News.collection.remove({'_id': ObjectId(news_id)})
-        update_rank_reverse(a_news['rank'])
-    except Exception as exp:
-        return {'fail_msg': 'Unable to delete the news item with that id'}, 404
+    delete_image_from_bucket(image_key)
+    db.News.collection.remove({'_id': ObjectId(news_id)})
+    update_rank_reverse(a_news['rank'])
+# except Exception as exp:
+#     return {'fail_msg': 'Unable to delete the news item with that id'}, 404
 
     return {'pass_msg': 'successfully deleted'}, 204

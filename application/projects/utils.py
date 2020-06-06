@@ -1,5 +1,5 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save, BASE_URl
+from application.utils.utils import image_decode_save, BASE_URl, delete_image_from_bucket
 
 
 def save_projects(title, description, rank, image, _id=None):

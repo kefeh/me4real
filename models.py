@@ -96,8 +96,11 @@ class Event(Document):
     __collection__ = 'events'
     structure = {
         'title': str,
-        'image': str,
+        'time': str,
         'description': str,
+        'location': str,
+        'latitude': str,
+        'longitude': str,
         'rank': int,
     }
 
@@ -128,7 +131,20 @@ class Subscriber(Document):
     required_fields = ['email']
 
 
+class Video(Document):
+    __collection__ = 'videos'
+    structure = {
+        'title': str,
+        'link': str,
+        'rank': int,
+        'date': str,
+    }
+
+    use_dot_notation = True
+    required_fields = ['title', 'link', 'rank', 'date']
+
+
 # Register the models
-connection.register([User, Carousel, News, Team, Subscriber])
+connection.register([User, Carousel, News, Team, Subscriber, Event, Blog, Project, Program, Testimonial, Video])
 
 db = connection.me4real

@@ -1,27 +1,21 @@
 from bson import ObjectId
-from application.utils.utils import image_decode_save, BASE_URl
 
 
-def save_events(title, description, rank, image, _id=None):
+def save_events(title, description, rank, time, location, latitude, longitude, _id=None):
     from models import db
     rank = int(rank)
     some_rank = int(rank)
     value = update_ranks(some_rank)
 
     events_item = db.Event() if not _id else db.Event.find_one({'_id': ObjectId(_id)})
-    image_name = str(title).replace(' ', '_')
-    if BASE_URl in image:
-        pass
-    else:
-        image = image_decode_save(image, image_name, 'events')
-        if 'error' in image:
-            return {'failed_msg': 'Could not upload image to the sever'}
-        else:
-            image = image.get('url')
+
     if value:
         events_item['description'] = description
         events_item['title'] = title
-        events_item['image'] = image
+        events_item['time'] = time
+        events_item['location'] = location
+        events_item['latitude'] = latitude
+        events_item['longitude'] = longitude
         events_item['rank'] = rank
         try:
             events_item.save()
@@ -89,10 +83,6 @@ def delete_events(events_id):
     from models import db
     try:
         a_events = db.Event.find_one({'_id': ObjectId(events_id)})
-        image_url = a_events.get('image')
-        image_key = image_url.split('/')[-1]
-
-        delete_image_from_bucket(image_key)
         db.Event.collection.remove({'_id': ObjectId(events_id)})
         update_rank_reverse(a_events['rank'])
     except Exception as exp:
